@@ -1,29 +1,47 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { baseUrl } from '../shared/baseUrl';
+import { Fade, Stagger } from 'react-animation-components';
+import { Loading } from './LoadingComponent';
 
-function RenderLeaders({ leader }) {
-    return (
-        <Media>
-            <Media left middle>
-                <Media object src={leader.image} alt={leader.name} />
+function RenderLeaders({ leader, isLoading, errMess }) {
+    return(
+        <Fade in>
+            <Media>
+                <Media left middle>
+                    <Media object src={baseUrl + leader.image} alt={leader.name} />
+                </Media>
+                <Media body className="ml-5">
+                    <Media heading>{leader.name}</Media>
+                    <p>{leader.designation}</p>
+                    <div>{leader.description}</div>
+                </Media>
             </Media>
-            <Media body className="ml-5">
-                <Media heading>{leader.name}</Media>
-                <p>{leader.designation}</p>
-                <div>{leader.description}</div>
-            </Media>
-        </Media>
+        </Fade>
     );
 }
 
 function About(props) {
-    const leaders = props.leaders.map((leader) => {
-        return (
-            <div key={leader.id} className="col-12 mb-4">
-                <RenderLeaders leader={leader} />
-            </div>
-        );
+    const leaders = props.leaders.leaders.map((leader) => {
+        console.log(props.leaders.isLoading);
+        if (props.leaders.isLoading) {
+            return (
+                <Loading />
+            );
+        }
+        else if (props.leaders.errMess) {
+            return (
+                <h4>{props.leaders.errMess}</h4>
+            );
+        }
+        else {
+            return (
+                <div key={leader.id} className="col-12 mb-4">
+                    <RenderLeaders leader={leader} />
+                </div>
+            );
+        }
     });
 
     return (
